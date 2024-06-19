@@ -5,23 +5,17 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from helpers.utils import generate_random_email, generate_random_password  # импорт функций из helpers.utils
+from helpers.data import REGISTERED_EMAIL, REGISTERED_PASSWORD  # импорт тестовых данных из helpers.data
+from helpers.urls import LOGIN_URL, HOME_URL  # импорт URL-адресов из helpers.urls
 
-def generate_random_email(length=10, domain="example.com"):
-    letters = string.ascii_letters + string.digits
-    username = ''.join(random.choice(letters) for _ in range(length))
-    email = f"{username}@{domain}"
-    return email
 
-def generate_random_password(length=8):
-    chars = string.ascii_letters + string.digits + string.punctuation
-    password = ''.join(random.choice(chars) for _ in range(length))
-    return password
 
 def test_positive_login(browser):
-    email = "Antonov18@ya.ru"  # зарегистрированный email
-    password = "password123"  # зарегистрированный пароль
+    email = REGISTERED_EMAIL  # зарегистрированный email
+    password = REGISTERED_PASSWORD  # зарегистрированный пароль
 
-    browser.get("https://stellarburgers.nomoreparties.site/login")
+    browser.get(LOGIN_URL)  # Использование URL из helpers.urls
 
     try:
         # Ввод email
@@ -48,10 +42,9 @@ def test_positive_login(browser):
 
         # Проверка успешного входа
         WebDriverWait(browser, 20).until(
-            EC.url_contains("https://stellarburgers.nomoreparties.site/")
+            EC.url_contains(HOME_URL)
         )
-        assert "https://stellarburgers.nomoreparties.site/" in browser.current_url
-
+        assert HOME_URL in browser.current_url
     except TimeoutException:
         pytest.fail("Login was expected to succeed, but it did not.")
 
@@ -59,7 +52,7 @@ def test_negative_login(browser):
     email = generate_random_email()
     password = generate_random_password()
 
-    browser.get("https://stellarburgers.nomoreparties.site/login")
+    browser.get(LOGIN_URL)  # Использование URL из helpers.urls
 
     try:
         # Ввод email
@@ -86,9 +79,9 @@ def test_negative_login(browser):
 
         # Проверка неуспешного входа
         WebDriverWait(browser, 10).until(
-            EC.url_to_be("https://stellarburgers.nomoreparties.site/login")
+            EC.url_to_be(LOGIN_URL)
         )
-        assert browser.current_url == "https://stellarburgers.nomoreparties.site/login"
+        assert browser.current_url == LOGIN_URL
 
     except TimeoutException:
         pytest.fail("Login was expected to fail, but it did not.")
