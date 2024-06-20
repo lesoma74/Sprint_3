@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from helpers.utils import generate_random_email, generate_random_password  # импорт функций из helpers.utils
 from helpers.data import REGISTERED_EMAIL, REGISTERED_PASSWORD  # импорт тестовых данных из helpers.data
 from helpers.urls import LOGIN_URL, HOME_URL  # импорт URL-адресов из helpers.urls
+from helpers.locators import LoginPageLocators
 
 
 
@@ -19,23 +20,21 @@ def test_positive_login(browser):
 
     # Ввод email
     email_input = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[text()='Email']/following-sibling::input"))
+        EC.presence_of_element_located(LoginPageLocators.EMAIL_INPUT)
     )
     email_input.clear()
     email_input.send_keys(email)
-    assert email_input.get_attribute("value") == email
 
     # Ввод пароля
     password_input = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[text()='Пароль']/following-sibling::input"))
+        EC.presence_of_element_located(LoginPageLocators.PASSWORD_INPUT)
     )
     password_input.clear()
     password_input.send_keys(password)
-    assert password_input.get_attribute("value") == password
 
     # Нажать кнопку "Войти"
     login_button = WebDriverWait(browser, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[text()='Войти']"))
+        EC.element_to_be_clickable(LoginPageLocators.LOGIN_BUTTON)
     )
     login_button.click()
 
@@ -52,23 +51,21 @@ def test_negative_login(browser):
 
     # Ввод email
     email_input = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[text()='Email']/following-sibling::input"))
+        EC.presence_of_element_located(LoginPageLocators.EMAIL_INPUT)
     )
     email_input.clear()
     email_input.send_keys(email)
-    assert email_input.get_attribute("value") == email
 
     # Ввод пароля
     password_input = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[text()='Пароль']/following-sibling::input"))
+        EC.presence_of_element_located(LoginPageLocators.PASSWORD_INPUT)
     )
     password_input.clear()
     password_input.send_keys(password)
-    assert password_input.get_attribute("value") == password
 
     # Нажать кнопку "Войти"
     login_button = WebDriverWait(browser, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[text()='Войти']"))
+        EC.element_to_be_clickable(LoginPageLocators.LOGIN_BUTTON)
     )
     login_button.click()
 

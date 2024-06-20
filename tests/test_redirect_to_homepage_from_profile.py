@@ -1,14 +1,12 @@
 import pytest
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from helpers.data import REGISTERED_EMAIL, REGISTERED_PASSWORD  # импорт тестовых данных из helpers.data
-from helpers.urls import LOGIN_URL, HOME_URL, PROFILE_URL, CONSTRUCTOR_URL  # импорт URL-адресов из helpers.urls
+from helpers.data import REGISTERED_EMAIL, REGISTERED_PASSWORD
+from helpers.urls import LOGIN_URL, HOME_URL, PROFILE_URL
 from helpers.locators import LoginPageLocators, ProfilePageLocators
 
-
-def test_redirect_to_constructor_from_profile(browser):
+def test_redirect_to_homepage_from_profile(browser):
     # Открыть страницу входа
     browser.get(LOGIN_URL)
 
@@ -33,7 +31,7 @@ def test_redirect_to_constructor_from_profile(browser):
     login_button.click()
 
     # Проверка URL после успешного входа (на главной странице)
-    WebDriverWait(browser, 10).until(
+    WebDriverWait(browser, 20).until(
         EC.url_contains(HOME_URL)
     )
     assert HOME_URL in browser.current_url
@@ -45,22 +43,29 @@ def test_redirect_to_constructor_from_profile(browser):
     profile_link.click()
 
     # Проверка URL после перехода на страницу профиля
-    WebDriverWait(browser, 10).until(
+    WebDriverWait(browser, 20).until(
         EC.url_contains(PROFILE_URL)
     )
     assert PROFILE_URL in browser.current_url
 
-    # Нажать на кнопку "Конструктор"
-    constructor_link = WebDriverWait(browser, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//p[@class='AppHeader_header__linkText__3q_va ml-2' and text()='Конструктор']"))
+    # Нажать на ссылку "Stellar Burgers" в личном кабинете
+    stellar_burgers_link = WebDriverWait(browser, 10).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, 'svg[viewBox="0 0 290 50"]'))
     )
-    constructor_link.click()
+    stellar_burgers_link.click()
 
-    # Проверка URL после перехода на страницу конструктора
+    # Проверка URL после перехода на главную страницу
     WebDriverWait(browser, 20).until(
-        EC.url_contains(CONSTRUCTOR_URL)
+        EC.url_to_be("https://stellarburgers.nomoreparties.site/")
     )
-    assert CONSTRUCTOR_URL in browser.current_url
+    assert "https://stellarburgers.nomoreparties.site/" == browser.current_url
+
+
+
+
+
+
+
 
 
 

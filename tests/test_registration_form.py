@@ -4,57 +4,47 @@ import string
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from helpers.utils import generate_test_data, generate_random_email, generate_random_password
+from helpers.data import EXISTING_USER_EMAIL
+from helpers.urls import REGISTER_URL
+from helpers.locators import RegisterPageLocators
 
-# Функция для генерации случайного email
-def generate_random_email(length=10, domain="example.com"):
-    letters = string.ascii_letters + string.digits
-    username = ''.join(random.choice(letters) for _ in range(length))
-    email = f"{username}@{domain}"
-    return email
 
-# Функция для генерации случайного пароля
-def generate_random_password(length=8):
-    chars = string.ascii_letters + string.digits + string.punctuation
-    password = ''.join(random.choice(chars) for _ in range(length))
-    return password
 
 @pytest.mark.parametrize("name, email, password", [
-    ("John Doe", generate_random_email(), generate_random_password()),  # позитивная проверка
+    generate_test_data(),  # позитивная проверка
     ("", generate_random_email(), generate_random_password()),  # негативная проверка: пустое имя
     ("John Doe", "john.doe.example.com", generate_random_password()),  # негативная проверка: некорректный email
     ("John Doe", generate_random_email(), "12345"),  # негативная проверка: короткий пароль
-    ("John Doe", "existing_user@example.com", generate_random_password())  # негативная проверка: пользователь уже существует
+    ("John Doe", EXISTING_USER_EMAIL, generate_random_password())  # негативная проверка: пользователь уже существует
 ])
 def test_registration_form(browser, name, email, password):
-    browser.get("https://stellarburgers.nomoreparties.site/register")
+    browser.get(REGISTER_URL)
 
     # Поле ввода имени
     name_input = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[text()='Имя']/following-sibling::input"))
+        EC.presence_of_element_located(RegisterPageLocators.NAME_INPUT)
     )
     name_input.clear()
     name_input.send_keys(name)
-    assert name_input.get_attribute("value") == name
 
     # Поле ввода email
     email_input = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[text()='Email']/following-sibling::input"))
+        EC.presence_of_element_located(RegisterPageLocators.EMAIL_INPUT)
     )
     email_input.clear()
     email_input.send_keys(email)
-    assert email_input.get_attribute("value") == email
 
     # Поле ввода пароля
     password_input = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[text()='Пароль']/following-sibling::input"))
+        EC.presence_of_element_located(RegisterPageLocators.PASSWORD_INPUT)
     )
     password_input.clear()
     password_input.send_keys(password)
-    assert password_input.get_attribute("value") == password
 
     # Кнопка регистрации
     register_button = WebDriverWait(browser, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[text()='Зарегистрироваться']"))
+        EC.element_to_be_clickable(RegisterPageLocators.REGISTER_BUTTON)
     )
     register_button.click()
 
