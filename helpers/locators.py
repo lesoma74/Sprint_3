@@ -26,7 +26,7 @@ class ResetPasswordPageLocators:
     PASSWORD_INPUT = (By.XPATH, "//label[text()='Пароль']/following-sibling::input")
 
 class ConstructorPageLocators:
-    @staticmethod
-    def get_section_title_xpath(section_title):
-        return f"//h2[text()='{section_title}']"
-
+    BUNS_TAB = (By.XPATH, "//span[text()='Булки']")
+    SAUCES_TAB = (By.XPATH, "//span[text()='Соусы']")
+    FILLINGS_TAB = (By.XPATH, "//span[text()='Начинки']")
+    ACTIVE_TAB = (By.CSS_SELECTOR, ".tab_tab_type_current__2BEPc")
