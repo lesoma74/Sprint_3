@@ -1,20 +1,14 @@
-import pytest
-import random
-import string
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from helpers.utils import generate_random_email, generate_random_password  # импорт функций из helpers.utils
-from helpers.data import REGISTERED_EMAIL, REGISTERED_PASSWORD  # импорт тестовых данных из helpers.data
-from helpers.urls import LOGIN_URL, HOME_URL  # импорт URL-адресов из helpers.urls
-from helpers.locators import LoginPageLocators
+from helpers.data import TestData
+from urls import LOGIN_URL, HOME_URL  # импорт URL-адресов из helpers.urls
+from locators import LoginPageLocators
 
 
 
 def test_positive_login(browser):
-    email = REGISTERED_EMAIL  # зарегистрированный email
-    password = REGISTERED_PASSWORD  # зарегистрированный пароль
+    email = TestData.REGISTERED_EMAIL  # зарегистрированный email
+    password = TestData.REGISTERED_PASSWORD  # зарегистрированный пароль
 
     browser.get(LOGIN_URL)  # Использование URL из helpers.urls
 
@@ -44,8 +38,8 @@ def test_positive_login(browser):
     )
     assert HOME_URL in browser.current_url
 def test_negative_login(browser):
-    email = generate_random_email()
-    password = generate_random_password()
+    email = TestData.generate_random_email()
+    password = TestData.generate_random_password()
 
     browser.get(LOGIN_URL)  # Использование URL из helpers.urls
 

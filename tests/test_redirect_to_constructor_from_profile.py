@@ -1,11 +1,9 @@
-import pytest
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from helpers.data import REGISTERED_EMAIL, REGISTERED_PASSWORD  # импорт тестовых данных из helpers.data
-from helpers.urls import LOGIN_URL, HOME_URL, PROFILE_URL, CONSTRUCTOR_URL  # импорт URL-адресов из helpers.urls
-from helpers.locators import LoginPageLocators, ProfilePageLocators
+from helpers.data import TestData
+from urls import LOGIN_URL, HOME_URL, PROFILE_URL, CONSTRUCTOR_URL
+from locators import LoginPageLocators, ProfilePageLocators
 
 
 def test_redirect_to_constructor_from_profile(browser):
@@ -17,14 +15,14 @@ def test_redirect_to_constructor_from_profile(browser):
         EC.presence_of_element_located(LoginPageLocators.EMAIL_INPUT)
     )
     email_input.clear()
-    email_input.send_keys(REGISTERED_EMAIL)
+    email_input.send_keys(TestData.REGISTERED_EMAIL)
 
     # Ввод пароля для входа
     password_input = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located(LoginPageLocators.PASSWORD_INPUT)
     )
     password_input.clear()
-    password_input.send_keys(REGISTERED_PASSWORD)
+    password_input.send_keys(TestData.REGISTERED_PASSWORD)
 
     # Нажать на кнопку "Войти"
     login_button = WebDriverWait(browser, 10).until(

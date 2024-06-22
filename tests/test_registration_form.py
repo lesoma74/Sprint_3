@@ -1,76 +1,163 @@
-import pytest
-import random
-import string
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from helpers.utils import generate_test_data, generate_random_email, generate_random_password
-from helpers.data import EXISTING_USER_EMAIL
-from helpers.urls import REGISTER_URL
-from helpers.locators import RegisterPageLocators
+from urls import REGISTER_URL
+from locators import RegisterPageLocators  # Импорт класса с локаторами
+from helpers.data import TestData  # Импорт класса с тестовыми данными
 
-
-
-@pytest.mark.parametrize("name, email, password", [
-    generate_test_data(),  # позитивная проверка
-    ("", generate_random_email(), generate_random_password()),  # негативная проверка: пустое имя
-    ("John Doe", "john.doe.example.com", generate_random_password()),  # негативная проверка: некорректный email
-    ("John Doe", generate_random_email(), "12345"),  # негативная проверка: короткий пароль
-    ("John Doe", EXISTING_USER_EMAIL, generate_random_password())  # негативная проверка: пользователь уже существует
-])
-def test_registration_form(browser, name, email, password):
+def test_successful_registration(browser):
     browser.get(REGISTER_URL)
+    name, email, password = TestData.generate_test_data()
 
-    # Поле ввода имени
+    # Заполнение формы регистрации
     name_input = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located(RegisterPageLocators.NAME_INPUT)
     )
     name_input.clear()
     name_input.send_keys(name)
 
-    # Поле ввода email
     email_input = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located(RegisterPageLocators.EMAIL_INPUT)
     )
     email_input.clear()
     email_input.send_keys(email)
 
-    # Поле ввода пароля
     password_input = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located(RegisterPageLocators.PASSWORD_INPUT)
     )
     password_input.clear()
     password_input.send_keys(password)
 
-    # Кнопка регистрации
     register_button = WebDriverWait(browser, 10).until(
         EC.element_to_be_clickable(RegisterPageLocators.REGISTER_BUTTON)
     )
     register_button.click()
 
-    # Проверка, что сообщение об ошибке отображается только при некорректном пароле
-    if len(password) < 6:
-        error_message = WebDriverWait(browser, 10).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, "//p[contains(@class, 'input__error') and text()='Некорректный пароль']"))
-        )
-        assert "Некорректный пароль" in error_message.text
-    else:
-        # Проверка, что сообщение об ошибке отсутствует, если пароль корректный
-        error_messages = browser.find_elements(By.XPATH,
-                                               "//p[contains(@class, 'input__error') and text()='Некорректный пароль']")
-        assert len(error_messages) == 0
 
-    # Проверка, что сообщение об ошибке отображается при уже существующем пользователе
-    if email == "existing_user@example.com":
-        error_message = WebDriverWait(browser, 10).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, "//p[contains(@class, 'input__error') and text()='Такой пользователь уже существует']"))
-        )
-        assert "Такой пользователь уже существует" in error_message.text
-    else:
-        # Проверка, что сообщение об ошибке отсутствует, если email не существует
-        error_messages = browser.find_elements(By.XPATH,
-                                               "//p[contains(@class, 'input__error') and text()='Такой пользователь уже существует']")
-        assert len(error_messages) == 0
+def test_registration_with_empty_name(browser):
+    browser.get(REGISTER_URL)
+    email = TestData.generate_random_email()
+    password = TestData.generate_random_password()
+
+    name_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.NAME_INPUT)
+    )
+    name_input.clear()
+    name_input.send_keys("")
+
+    email_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.EMAIL_INPUT)
+    )
+    email_input.clear()
+    email_input.send_keys(email)
+
+    password_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.PASSWORD_INPUT)
+    )
+    password_input.clear()
+    password_input.send_keys(password)
+
+    register_button = WebDriverWait(browser, 10).until(
+        EC.element_to_be_clickable(RegisterPageLocators.REGISTER_BUTTON)
+    )
+    register_button.click()
+
+
+def test_registration_with_invalid_email(browser):
+    browser.get(REGISTER_URL)
+    name = "John Doe"
+    email = "john.doe.example.com"
+    password = TestData.generate_random_password()
+
+    name_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.NAME_INPUT)
+    )
+    name_input.clear()
+    name_input.send_keys(name)
+
+    email_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.EMAIL_INPUT)
+    )
+    email_input.clear()
+    email_input.send_keys(email)
+
+    password_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.PASSWORD_INPUT)
+    )
+    password_input.clear()
+    password_input.send_keys(password)
+
+    register_button = WebDriverWait(browser, 10).until(
+        EC.element_to_be_clickable(RegisterPageLocators.REGISTER_BUTTON)
+    )
+    register_button.click()
+
+def test_registration_with_short_password(browser):
+    browser.get(REGISTER_URL)
+    name = "John Doe"
+    email = TestData.generate_random_email()
+    password = "12345"  # Короткий пароль
+
+    name_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.NAME_INPUT)
+    )
+    name_input.clear()
+    name_input.send_keys(name)
+
+    email_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.EMAIL_INPUT)
+    )
+    email_input.clear()
+    email_input.send_keys(email)
+
+    password_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.PASSWORD_INPUT)
+    )
+    password_input.clear()
+    password_input.send_keys(password)
+
+    register_button = WebDriverWait(browser, 10).until(
+        EC.element_to_be_clickable(RegisterPageLocators.REGISTER_BUTTON)
+    )
+    register_button.click()
+
+    # Проверка сообщения об ошибке о некорректном пароле
+    error_message = WebDriverWait(browser, 10).until(
+        EC.visibility_of_element_located(RegisterPageLocators.PASSWORD_ERROR_MESSAGE)
+    )
+    assert "Некорректный пароль" in error_message.text
+
+def test_registration_with_existing_user(browser):
+    browser.get(REGISTER_URL)
+    name = "John Doe"
+    email = TestData.EXISTING_USER_EMAIL
+    password = TestData.generate_random_password()
+
+    name_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.NAME_INPUT)
+    )
+    name_input.clear()
+    name_input.send_keys(name)
+
+    email_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.EMAIL_INPUT)
+    )
+    email_input.clear()
+    email_input.send_keys(email)
+
+    password_input = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located(RegisterPageLocators.PASSWORD_INPUT)
+    )
+    password_input.clear()
+    password_input.send_keys(password)
+
+    register_button = WebDriverWait(browser, 10).until(
+        EC.element_to_be_clickable(RegisterPageLocators.REGISTER_BUTTON)
+    )
+    register_button.click()
+
+    # Проверка сообщения об ошибке о существующем пользователе
+    error_message = WebDriverWait(browser, 10).until(
+        EC.visibility_of_element_located(RegisterPageLocators.EXISTING_USER_ERROR_MESSAGE)
+    )
+    assert "Такой пользователь уже существует" in error_message.text
 

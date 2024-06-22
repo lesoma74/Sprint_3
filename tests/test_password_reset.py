@@ -1,12 +1,8 @@
-import pytest
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from helpers.utils import generate_random_password
-from helpers.data import REGISTERED_EMAIL
-from helpers.urls import LOGIN_URL, FORGOT_PASSWORD_URL, RESET_PASSWORD_URL
-from helpers.locators import LoginPageLocators, ForgotPasswordPageLocators, ResetPasswordPageLocators
+from helpers.data import TestData
+from urls import LOGIN_URL, FORGOT_PASSWORD_URL, RESET_PASSWORD_URL
+from locators import LoginPageLocators, ForgotPasswordPageLocators, ResetPasswordPageLocators
 
 
 def test_password_reset(browser):
@@ -30,7 +26,7 @@ def test_password_reset(browser):
         EC.presence_of_element_located(ForgotPasswordPageLocators.EMAIL_INPUT)
     )
     email_input.clear()
-    email_input.send_keys(REGISTERED_EMAIL)
+    email_input.send_keys(TestData.REGISTERED_EMAIL)
 
     # Нажать на кнопку "Восстановить"
     reset_button = WebDriverWait(browser, 10).until(
@@ -44,7 +40,7 @@ def test_password_reset(browser):
     )
     assert RESET_PASSWORD_URL in browser.current_url
     # Ввод нового пароля
-    password = generate_random_password()
+    password = TestData.generate_random_password()
     password_input = WebDriverWait(browser, 10).until(
         EC.presence_of_element_located(ResetPasswordPageLocators.PASSWORD_INPUT)
     )

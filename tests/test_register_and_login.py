@@ -1,16 +1,11 @@
-import pytest
-import random
-import string
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from helpers.utils import generate_test_data
-from helpers.locators import RegisterPageLocators, LoginPageLocators
-from helpers.urls import LOGIN_URL, HOME_URL, REGISTER_URL
+from helpers.data import TestData
+from locators import RegisterPageLocators, LoginPageLocators
+from urls import LOGIN_URL, HOME_URL, REGISTER_URL
 
 def test_register_and_login(browser):
-    name, email, password = generate_test_data()
+    name, email, password = TestData.generate_test_data()
 
     browser.get(REGISTER_URL)
 

@@ -5,6 +5,9 @@ class RegisterPageLocators:
     EMAIL_INPUT = (By.XPATH, "//label[text()='Email']/following-sibling::input")
     PASSWORD_INPUT = (By.XPATH, "//label[text()='Пароль']/following-sibling::input")
     REGISTER_BUTTON = (By.XPATH, "//button[text()='Зарегистрироваться']")
+    PASSWORD_ERROR_MESSAGE = (By.XPATH, "//p[contains(@class, 'input__error') and text()='Некорректный пароль']")
+    EXISTING_USER_ERROR_MESSAGE = (
+    By.XPATH, "//p[contains(@class, 'input__error') and text()='Такой пользователь уже существует']")
 
 class LoginPageLocators:
     EMAIL_INPUT = (By.XPATH, "//label[text()='Email']/following-sibling::input")
